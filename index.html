@@ -1,0 +1,12 @@
+<script>
+  async function main(){
+    const buf = await fetch("example.wasm").then((r) => r.arrayBuffer()) ;
+    const { instance } = await WebAssembly.instantiate(buf, {});
+    const api = instance.exports;
+    const memory = api.memory;
+
+    const r = api.add();
+    console.log("add returned:", r);
+  }
+  main();
+</script>
