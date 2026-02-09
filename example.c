@@ -1,3 +1,4 @@
+#define WASM_STDLIB
 #include "./wasm_memory.h"
 
 int add(){
