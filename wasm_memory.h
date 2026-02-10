@@ -10,7 +10,7 @@ static uint8_t *heap_end = 0;
 unsigned long __builtin_wasm_memory_size(int index);
 unsigned long __builtin_wasm_memory_grow(int index, unsigned long delta);
 
-void wasm_heap_init(void) {
+static inline void wasm_heap_init(void) {
   uint32_t pages = __builtin_wasm_memory_size(0);
   heap_end = (uint8_t *)(pages * 65536);
 }
@@ -33,7 +33,11 @@ void *wasm_alloc(size_t size) {
   return p;
 }
 
+#define W_ALLOC wasm_alloc
+
 #else
 #include <stdint.h>
 #include <stdlib.h>
+#define W_ALLOC malloc
+#include <stdio.h>
 #endif
