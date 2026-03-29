@@ -2,9 +2,9 @@ set -xe
 
 clang \
   -O3 \
-  --target=wasm32 -nostdlib \
+  -w \
+  --target=wasm32 -nostdlib -fno-builtin  \
   -Wl,--no-entry \
   -Wl,--export-all \
-  -Wl,--initial-memory=131072\
   -Wl,--max-memory=$((256 * 1024 * 1024))\
 	example.c -o example.wasm

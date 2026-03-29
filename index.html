@@ -1,12 +1,27 @@
 <script>
-  async function main(){
-    const buf = await fetch("example.wasm").then((r) => r.arrayBuffer()) ;
-    const { instance } = await WebAssembly.instantiate(buf, {});
-    const api = instance.exports;
-    const memory = api.memory;
+  (async () => {
+    let lineBuffer = "";
+    const importObject = {
+      env: {
+        write_char_js: (c) => {
+          const char = String.fromCharCode(c);
+          if (char === '\n') {
+            console.log(lineBuffer);
+            lineBuffer = "";
+          } else {
+            lineBuffer += char;
+          }
+          return 0;
+        }
+      }
+    };
 
-    const r = api.add();
-    console.log("add returned:", r);
-  }
-  main();
+    const { instance } = await WebAssembly.instantiateStreaming(fetch("example.wasm"), importObject);
+    const api = instance.exports;
+
+    const r = api.main();
+    console.log("WASM Return Value:", r);
+
+    if (lineBuffer) console.log(lineBuffer);
+  })();
 </script>
